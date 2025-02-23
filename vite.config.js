@@ -8,7 +8,13 @@ export default defineConfig({
   plugins: [react()],
   base: '/', // Base path cho router
   server: {
-    historyApiFallback: true, // Hỗ trợ route fallback
+    proxy: {
+      '/user': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/user/, '/user'),
+      },
+    },
   },
   css: {
     postcss: {
@@ -20,5 +26,5 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-  }
+  },
 })

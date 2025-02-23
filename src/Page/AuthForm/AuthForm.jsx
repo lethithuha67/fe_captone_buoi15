@@ -1,60 +1,82 @@
-import React, { useState } from "react";
+import { message } from "antd";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthForm({ type }) {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
-    ...(type === "register" && { name: "", age: "" }),
+    pass_word: "",
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    const result = await fetch("/user/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await result.json();
+    if(data.message === 'Login Successfully') {
+      message.success("Login success");
+      localStorage.setItem('DATA_USER', JSON.stringify(data.data));
+      window.location.href = "/";
+    } else {
+      message.error("Email or password is incorrect");
+    }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-full bg-stone-100">
       <div className="bg-white p-6 rounded-2xl shadow-lg w-96">
-        <h2 className="text-xl font-semibold text-center">
-          Welcome to my picture
+        <h2 className="text-xl font-semibold text-center mb-6">
+          {type === "register" ? "Create Account" : "Welcome Back"}
         </h2>
-        {type === "register" && (
-          <p className="text-gray-500 text-center mb-4">
-            Tìm những ý tưởng mới để thử
-          </p>
-        )}
-
-        <div className="space-y-4">
-          {/* email */}
+        <form onSubmit={submit} className="space-y-4">
           <div>
-            <label className="block text-gray-700">Email</label>
+            <label className="block text-gray-700 mb-1">Email</label>
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-2 border rounded-lg outline-none"
+              className="w-full p-2 border rounded-lg outline-none focus:border-red-500"
+              required
             />
           </div>
 
-          {/* mật khẩu email */}
           <div>
-            <label className="block text-gray-700">Mật khẩu</label>
+            <label className="block text-gray-700 mb-1">Password</label>
             <input
               type="password"
               name="password"
-              placeholder={type === "register" ? "Tạo mật khẩu" : "Mật khẩu"}
+              placeholder={type === "register" ? "Create password" : "Enter password"}
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-2 border rounded-lg outline-none"
+              className="w-full p-2 border rounded-lg outline-none focus:border-red-500"
+              required
             />
           </div>
 
-          {/* nút đăng nhập  */}
-          <button className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">
-            {type === "register" ? "Đăng ký" : "Đăng nhập"}
+          <button 
+            type="submit" 
+            className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors"
+          >
+            {type === "register" ? "Sign Up" : "Sign In"}
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );

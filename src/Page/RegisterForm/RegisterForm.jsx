@@ -1,12 +1,14 @@
+import { message } from "antd";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterForm() {
+  const navigate = useNavigate()
   // Khai báo state để lưu thông tin đăng ký
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
-    fullName: "",
-    age: "",
+    pass_word: "",
+    full_name: "",
   });
 
   // Hàm xử lý thay đổi dữ liệu trong form
@@ -15,9 +17,24 @@ export default function RegisterForm() {
   };
 
   // Hàm xử lý khi nhấn nút đăng ký
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Thông tin đăng ký:", formData);
+    const result = await fetch("/user/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await result.json();
+
+    if (data.code === 201) {
+      message.success("Register success");
+      navigate("/authform")
+    } else {
+      message.error("Email is already registered");
+    }
   };
 
   return (
@@ -48,8 +65,8 @@ export default function RegisterForm() {
           <label className="block mt-3 mb-2 font-medium">Mật khẩu</label>
           <input
             type="password"
-            name="password"
-            value={formData.password}
+            name="pass_word"
+            value={formData.pass_word}
             onChange={handleChange}
             className="w-full p-2 rounded-lg border"
             placeholder="Tạo mật khẩu"
@@ -60,23 +77,11 @@ export default function RegisterForm() {
           <label className="block mt-3 mb-2 font-medium">Họ tên</label>
           <input
             type="text"
-            name="fullName"
-            value={formData.fullName}
+            name="full_name"
+            value={formData.full_name}
             onChange={handleChange}
             className="w-full p-2 rounded-lg border"
             placeholder="Họ tên"
-            required
-          />
-
-          {/* Ô nhập Tuổi */}
-          <label className="block mt-3 mb-2 font-medium">Tuổi</label>
-          <input
-            type="number"
-            name="age"
-            value={formData.age}
-            onChange={handleChange}
-            className="w-full p-2 rounded-lg border"
-            placeholder="Tuổi"
             required
           />
 

@@ -1,22 +1,56 @@
-import { useState } from "react";
+import { message } from "antd";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 // Import hook useState từ React để quản lý trạng thái của form
 
 export default function ProfileEdit() {
-  // Khai báo component ProfileEdit
+  const navigate = useNavigate()
+  const {id} = useParams()
+  const [userEdit, setUserEdit] = useState({});
 
   const [profile, setProfile] = useState({
-    firstName: "đó", // Giá trị mặc định cho trường "Tên"
-    lastName: "ai", // Giá trị mặc định cho trường "Họ"
-    bio: "Kể câu chuyện của bạn", // Giá trị mặc định cho trường "Giới thiệu"
-    website: "", // Giá trị mặc định cho trường "Trang web"
-    username: "ai đó", // Giá trị mặc định cho trường "Tên người dùng"
+    email: "",
+    pass_word: "",
+    full_name: "",
+    avatar: "",
   });
+
+  const user = JSON.parse(localStorage.getItem('DATA_USER'));
 
   // Hàm xử lý thay đổi giá trị của các input
   const handleChange = (e) => {
     const { name, value } = e.target; // Lấy name và value từ input được thay đổi
     setProfile((prev) => ({ ...prev, [name]: value })); // Cập nhật trạng thái của profile
   };
+
+  const resetForm = () => {
+    setProfile({
+      email: "",
+      pass_word: "",
+      full_name: "",
+      avatar: "",
+    })
+  }
+
+  const getUser = async() => {
+    const result = await fetch("/user/list", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await result.json();
+    const find = data.data?.find((item) => item.user_id === id)
+    setUserEdit(find)
+    console.log(userEdit)
+  }
+
+  useEffect(() => {
+    if(!user) {
+      message.warning("Please login first!")
+      navigate("/authform")
+    }
+  }, [])
 
   return (
     <div className="flex flex-col items-center bg-gray-100 min-h-screen p-10">
@@ -61,73 +95,44 @@ export default function ProfileEdit() {
         {/* Mô tả ngắn về hồ sơ công khai */}
 
         <div className="flex items-center mb-4">
-          {/* Phần chứa ảnh đại diện và nút thay đổi */}
-
-          <div className="w-16 h-16 flex items-center justify-center bg-gray-300 rounded-full text-xl font-bold">
-            Đ
-          </div>
-          {/* Vòng tròn đại diện cho ảnh đại diện, có chữ "Đ" bên trong */}
-
-          <button className="ml-4 px-3 py-1 bg-gray-200 rounded">
-            Thay đổi
-          </button>
-          {/* Nút thay đổi ảnh đại diện */}
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          {/* Chia bố cục thành 2 cột để nhập "Tên" và "Họ" */}
-
-          <div>
-            <label className="text-gray-600">Tên</label>
-            {/* Nhãn cho ô nhập tên */}
-            <input
-              type="text"
-              name="firstName"
-              value={profile.firstName}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-            />
-            {/* Ô input cho "Tên", cập nhật giá trị khi nhập */}
-          </div>
-
-          <div>
-            <label className="text-gray-600">Họ</label>
-            {/* Nhãn cho ô nhập họ */}
-            <input
-              type="text"
-              name="lastName"
-              value={profile.lastName}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-            />
-            {/* Ô input cho "Họ", cập nhật giá trị khi nhập */}
-          </div>
-        </div>
-
-        <div className="mt-4">
-          <label className="text-gray-600">Giới thiệu</label>
-          {/* Nhãn cho ô giới thiệu */}
-          <textarea
-            name="bio"
-            value={profile.bio}
-            onChange={handleChange}
-            className="border p-2 rounded w-full"
+          <img src={profile.avatar} alt="avatar" className="w-16 h-16 flex items-center justify-center bg-gray-300 rounded-full" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  setProfile(prevProfile => ({ ...prevProfile, avatar: reader.result }));
+                };
+                reader.readAsDataURL(file);
+              }
+            }}
+            className="ml-4"
           />
-          {/* Ô textarea cho phần giới thiệu */}
         </div>
 
         <div className="mt-4">
-          <label className="text-gray-600">Trang web</label>
-          {/* Nhãn cho ô nhập trang web */}
+          <label className="text-gray-600">email</label>
           <input
             type="text"
-            name="website"
-            value={profile.website}
+            name="email"
+            value={profile.email}
             onChange={handleChange}
             className="border p-2 rounded w-full"
-            placeholder="Thêm liên kết để hướng lưu lượng vào website"
           />
-          {/* Ô input cho trang web, có placeholder hướng dẫn */}
+        </div>
+
+        <div className="mt-4">
+          <label className="text-gray-600">Password</label>
+          <input
+            type="password"
+            name="pass_word"
+            value={profile.pass_word}
+            onChange={handleChange}
+            className="border p-2 rounded w-full"
+          />
         </div>
 
         <div className="mt-4">
@@ -135,8 +140,8 @@ export default function ProfileEdit() {
           {/* Nhãn cho ô nhập tên người dùng */}
           <input
             type="text"
-            name="username"
-            value={profile.username}
+            name="full_name"
+            value={profile.full_name}
             onChange={handleChange}
             className="border p-2 rounded w-full"
           />
@@ -146,7 +151,7 @@ export default function ProfileEdit() {
         <div className="flex justify-center mt-4 space-x-2">
           {/* Nhóm nút "Thiết lập lại" và "Lưu", căn giữa */}
 
-          <button className="px-4 py-2 bg-gray-200 rounded">
+          <button onClick={resetForm} className="px-4 py-2 bg-gray-200 rounded">
             Thiết lập lại
           </button>
           {/* Nút "Thiết lập lại", nền xám */}

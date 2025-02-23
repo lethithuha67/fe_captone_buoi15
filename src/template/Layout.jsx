@@ -50,7 +50,7 @@ export default function Layout({ main }) {
     };
   }, []);
   return (
-    <div className="bg-white text-black-gray flex flex-col h-full w-full">
+    <div className="bg-white text-black-gray flex flex-col h-screen w-full min-h-screen">
       <Header />
       {main}
       <Footer />
