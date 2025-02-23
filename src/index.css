@@ -1,0 +1,175 @@
+
+* {
+  scrollbar-width: thin; /* Sử dụng từ khóa thin để làm thanh cuộn mỏng hơn */
+
+}
+:root {
+  --vh: 100%;
+  background-color: #ffffff;
+  color: #000000;
+  background-color: #ffffff;
+  background: #ffffff;
+  background-image: url('https://netzero.tranduc.com/cdn/netzero/background/bg-white-color.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Default Font */
+@font-face {
+  font-family: 'SFUFutura';
+  src: url('./public/font/SFUFuturaBook.ttf') format('truetype');
+}
+
+body {
+    font-family: 'SFUFutura';
+  }
+
+  h1, h2, h3{
+    font-family: 'SFUFuturaBook';
+  }
+  h4, h5, h6, p, small{
+    font-family: 'SFUFuturaBook';
+  }
+
+.textBanner { @apply text-4xl md:text-5xl lg:text-6xl; }
+.textSubBanner { @apply text-3xl md:text-4xl lg:text-5xl; }
+.textTitle { @apply text-lg md:text-xl lg:text-3xl; }
+.textSubTitle { @apply text-lg md:text-xl lg:text-2xl text-gray-400; }
+.textCardTitle { @apply text-lg lg:text-xl; }
+.textCardItemTitle { @apply text-lg lg:text-xl; }
+.textCollectionItemTitle { @apply font-medium text-xl lg:text-2xl; }
+.textCollectionItemDescription { @apply text-base text-gray-500; }
+.textCardItemSubTitle { @apply text-sm lg:text-base text-gray-400; }
+.textTitleImage { @apply text-base md:text-lg lg:text-xl; }
+.textSearch { @apply text-base lg:text-lg; }
+/* Default Background */
+.bg-black-gray {
+  @apply bg-[#222222];
+}
+.text-black-gray {
+  @apply text-[#222222];
+}
+.bg-home {
+  background-image: url(https://res.cloudinary.com/dgkceewlq/image/upload/v1734690412/bg-main_idgxey_xnre8v.jpg);
+  background-size: contain;
+  background-repeat: repeat;
+}
+
+.h-35r {
+   height: 35rem;
+}
+.h-50r {
+  height: 50rem;
+}
+.h-55r {
+  height: 55rem;
+}
+
+/* Button styles */
+
+.btnLVT {
+  @apply btn bg-black border-none text-white rounded-none hover:bg-white hover:border hover:text-black hover:outline-1;
+}
+.btnLVT:hover{
+  border: 1px solid black;
+
+}
+.btnLVT-sm {
+  @apply btn-sm btnLVT;
+}
+
+.btnLVT-md {
+  @apply btn-md btnLVT;
+}
+
+.btnLVT-lg {
+  @apply btn-lg btnLVT;
+}
+
+.btnLVT-outline {
+  border: 1px solid black;
+  @apply border outline-1 border-black text-black bg-transparent hover:bg-black hover:text-white;
+}
+
+.btnLVT-dark {
+  @apply bg-white text-neutral hover:bg-gray-600 hover:text-white;
+}
+
+/* Focus and active states */
+.btnLVT:focus {
+  @apply outline-none ring-2 ring-offset-2 ring-[#222222];
+}
+
+.btnLVT:active {
+  @apply bg-stone-800 text-white;
+}
+
+/* Tùy chỉnh thanh cuộn */
+::-webkit-scrollbar {
+  width: 3px !important;
+}
+::-webkit-scrollbar:hover {
+  width: 3px !important; /* Kích thước khi hover */
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 2px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+  width: 3px !important ;
+  background: #555;
+}
+
+.nav-item {
+  position: relative;
+}
+.nav-item:hover:after {
+  width: 100%;
+}
+.nav-item:after {
+  bottom: 0;
+  content: "";
+  height: 0.125rem;
+  left: 0;
+  position: absolute;
+  width: 0;
+  --tw-bg-opacity: 1;
+  background-color: rgb(34 34 34 / var(--tw-bg-opacity));
+  transition-duration: 0.5s;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-hidden {
+  animation: slideUp 0.7s ease-in-out forwards;
+}
+.nav-show {
+  animation: slideDown 0.7s ease-in-out forwards;
+}
+@keyframes slideUp {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+#header-desktop {
+  z-index: 1000;
+}
