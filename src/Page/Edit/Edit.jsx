@@ -7,6 +7,7 @@ export default function ProfileEdit() {
   const navigate = useNavigate()
   const {id} = useParams()
   const [userEdit, setUserEdit] = useState({});
+  const [avatarUp, setAvatarUp] = useState(null);
 
   const [profile, setProfile] = useState({
     email: "",
@@ -52,7 +53,34 @@ export default function ProfileEdit() {
     }
   };
 
+  const uploadAvatar = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      const result = await fetch(`/image/avatar`, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await result.json();
+      if (data.data.secure_url) {
+        message.success('Avatar uploaded successfully');
+        profile.avatar = data.data.secure_url
+      } else {
+        message.error('Failed to upload avatar');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      message.error('Error uploading avatar');
+      return null;
+    }
+  }
+
   const updateProfile = async () => {
+    await uploadAvatar(avatarUp)
+
     const formData = {
       user_id: id,
       email: profile.email,
@@ -61,17 +89,19 @@ export default function ProfileEdit() {
       avatar: profile.avatar,
     }
     console.log(formData)
-    // try {
-    //   const result = await fetch(`/user/create-info`, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(formData),
-    //   })
-    // } catch (error) {
-      
-    // }
+    try {
+      const result = await fetch(`/user/create-info`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${user.tokens.accessToken}`
+        },
+        body: JSON.stringify(formData),
+      })
+      message.success('Update success')
+    } catch (error) {
+      message.error('Update failed')
+    }
   }
   
   useEffect(() => {
@@ -125,22 +155,37 @@ export default function ProfileEdit() {
         </p>
         {/* Mô tả ngắn về hồ sơ công khai */}
 
-        <div className="flex items-center mb-4">
-          <img src={profile.avatar} alt="avatar" className="w-16 h-16 flex items-center justify-center bg-gray-300 rounded-full" />
+        <div className="flex flex-col items-center space-y-4 mb-4">
+          <div className="relative">
+            <img 
+              src={profile.avatar || "https://via.placeholder.com/150"} 
+              alt="avatar" 
+              className="w-24 h-24 object-cover rounded-full border-2 border-gray-200"
+            />
+            <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 bg-stone-500 text-white p-2 rounded-full cursor-pointer hover:bg-stone-600">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+            </svg>
+            </label>
+          </div>
           <input
+            id="avatar-upload"
             type="file"
             accept="image/*"
-            onChange={(e) => {
+            onChange={async (e) => {
               const file = e.target.files[0];
               if (file) {
+                // Show preview immediately
                 const reader = new FileReader();
                 reader.onloadend = () => {
                   setProfile(prevProfile => ({ ...prevProfile, avatar: reader.result }));
                 };
                 reader.readAsDataURL(file);
               }
+              setAvatarUp(file);
             }}
-            className="ml-4"
+            className="hidden"
           />
         </div>
 
