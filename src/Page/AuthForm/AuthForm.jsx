@@ -19,22 +19,27 @@ export default function AuthForm({ type }) {
 
   const submit = async (e) => {
     e.preventDefault();
-    const result = await fetch("/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+try {
+  const result = await fetch("/user/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  });
 
-    const data = await result.json();
-    if(data.message === 'Login Successfully') {
-      message.success("Login success");
-      localStorage.setItem('DATA_USER', JSON.stringify(data.data));
-      window.location.href = "/";
-    } else {
-      message.error("Email or password is incorrect");
-    }
+  const data = await result.json();
+  if(data.data.user.user_id) {
+    message.success("Login success");
+    localStorage.setItem('DATA_USER', JSON.stringify(data.data));
+    window.location.href = "/";
+  } else {
+    message.error("Email or password is incorrect");
+  }
+} catch (error) {
+  console.log(error);
+  message.error("Email or password is incorrect");
+}
   };
 
   return (

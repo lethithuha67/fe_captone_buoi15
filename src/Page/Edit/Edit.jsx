@@ -25,14 +25,13 @@ export default function ProfileEdit() {
 
   const resetForm = () => {
     setProfile({
-      email: "",
       pass_word: "",
       full_name: "",
       avatar: "",
     })
   }
 
-  const getUser = async() => {
+  const getUser = async () => {
     const result = await fetch("/user/list", {
       method: "GET",
       headers: {
@@ -40,17 +39,49 @@ export default function ProfileEdit() {
       },
     });
     const data = await result.json();
-    const find = data.data?.find((item) => item.user_id === id)
-    setUserEdit(find)
-    console.log(userEdit)
-  }
-
-  useEffect(() => {
-    if(!user) {
-      message.warning("Please login first!")
-      navigate("/authform")
+    const find = data.data?.find((item) => item.user_id === id);
+    
+    if (find) {
+      setUserEdit(find);
+      setProfile({
+        email: find.email || "",
+        pass_word: "", // Keep password empty for security
+        full_name: find.full_name || "",
+        avatar: find.avatar || "",
+      });
     }
-  }, [])
+  };
+
+  const updateProfile = async () => {
+    const formData = {
+      user_id: id,
+      email: profile.email,
+      pass_word: profile.pass_word,
+      full_name: profile.full_name,
+      avatar: profile.avatar,
+    }
+    console.log(formData)
+    // try {
+    //   const result = await fetch(`/user/create-info`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(formData),
+    //   })
+    // } catch (error) {
+      
+    // }
+  }
+  
+  useEffect(() => {
+    if (!user) {
+      message.warning("Please login first!");
+      navigate("/authform");
+    } else {
+      getUser();
+    }
+  }, [id]); // Add id as a dependency to re-run when it changes
 
   return (
     <div className="flex flex-col items-center bg-gray-100 min-h-screen p-10">
@@ -116,6 +147,7 @@ export default function ProfileEdit() {
         <div className="mt-4">
           <label className="text-gray-600">email</label>
           <input
+            readOnly
             type="text"
             name="email"
             value={profile.email}
@@ -156,7 +188,7 @@ export default function ProfileEdit() {
           </button>
           {/* Nút "Thiết lập lại", nền xám */}
 
-          <button className="px-4 py-2 bg-red-500 text-white rounded">
+          <button onClick={updateProfile} className="px-4 py-2 bg-red-500 text-white rounded">
             Lưu
           </button>
           {/* Nút "Lưu", nền đỏ, chữ trắng */}
