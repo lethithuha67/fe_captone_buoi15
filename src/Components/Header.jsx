@@ -38,8 +38,12 @@ export default function Header() {
         {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-6">
           <NavLink to="/">Home</NavLink>
-          <NavLink to="/details">Details</NavLink>
-          <NavLink to="/addimages">Addimages</NavLink>
+          {isLogin && (
+            <>
+            <NavLink to="/myimages">My Images</NavLink>
+            <NavLink to="/addimages">Add Images</NavLink>
+            </>
+          )}
         </nav>
 
         {/* Login & Register Buttons */}

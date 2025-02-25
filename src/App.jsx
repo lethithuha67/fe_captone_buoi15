@@ -7,6 +7,7 @@ import Addimages from "./Page/Addimages/Addimages";
 import Edit from "./Page/Edit/Edit";
 import AuthForm from "./Page/AuthForm/AuthForm";
 import RegisterForm from "./Page/RegisterForm/RegisterForm";
+import MyImages from "./Page/MyImages/MyImages";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/addimages" element={<Layout main={<Addimages />} />} />
           <Route path="/edit/:id" element={<Layout main={<Edit />} />} />
           <Route path="/authform" element={<Layout main={<AuthForm />} />} />
+          <Route path="/myimages" element={<Layout main={<MyImages />} />} />
           <Route
             path="/registerform"
             element={<Layout main={<RegisterForm />} />}

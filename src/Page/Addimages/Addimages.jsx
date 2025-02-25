@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Upload,
-  Link,
   Bell,
   MessageSquare,
   ChevronDown,
@@ -21,6 +20,12 @@ function AddImages() {
     public_id: ""
   })
   const user = JSON.parse(localStorage.getItem('DATA_USER'));
+
+  if (!user || !user.user) {
+    window.location.href = "/authform";
+    message.warning("Please login first!");
+    return;
+  }
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -105,10 +110,6 @@ function AddImages() {
   }
 
   useEffect(() => {
-    if (!user) {
-      message.warning("Please login first!");
-      navigate("/authform");
-    }
   }, []);
 
   return (
