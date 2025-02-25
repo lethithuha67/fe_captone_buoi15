@@ -15,7 +15,7 @@ function App() {
       <BrowserRouter basename="/">
         <Routes>
           <Route path="/" element={<Layout main={<Home />} />} />
-          <Route path="/details" element={<Layout main={<Details />} />} />
+          <Route path="/details/:id" element={<Layout main={<Details />} />} />
           <Route path="/addimages" element={<Layout main={<Addimages />} />} />
           <Route path="/edit/:id" element={<Layout main={<Edit />} />} />
           <Route path="/authform" element={<Layout main={<AuthForm />} />} />

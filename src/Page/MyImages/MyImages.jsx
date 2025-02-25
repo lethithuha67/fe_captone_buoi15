@@ -54,8 +54,9 @@ export default function MyImages() {
             message.warning("Please login first!");
             navigate("/authform");
             return;
+        } else {
+            payload();
         }
-        payload();
     }, []);
 
   return (
