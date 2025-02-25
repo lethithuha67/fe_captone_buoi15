@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Upload,
   Link,
@@ -7,10 +7,20 @@ import {
   ChevronDown,
   Search,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 function AddImages() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [link, setLink] = useState("");
+  const navigate = useNavigate()
+  const [dataImg, setDataImg] = useState({
+    url: "",
+    title: "",
+    description: "",
+    public_id: ""
+  })
+  const user = JSON.parse(localStorage.getItem('DATA_USER'));
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -19,253 +29,196 @@ function AddImages() {
     }
   };
 
-  const handleSave = () => {
-    if (selectedFile) {
-      alert("Ảnh đã được lưu!");
-    } else {
-      alert("Vui lòng chọn một ảnh trước khi lưu.");
+  // Hàm xử lý thay đổi dữ liệu trong form
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setDataImg((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const uploadAvatar = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      const result = await fetch(`/image/avatar`, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await result.json();
+      if (data.data.secure_url) {
+        dataImg.url = data.data.secure_url
+        dataImg.public_id = data.data.public_id
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      message.error('Error uploading image');
+      return null;
+    }
+  }
+
+  const handleSave = async() => {
+    if (!selectedFile) {
+      message.warning("Please select an image first!");
+      return;
+    }
+
+    await uploadAvatar(selectedFile)
+
+    const formImg = {
+      url: dataImg.url,
+      title: dataImg.title,
+      description: dataImg.description,
+      public_id: dataImg.public_id,
+      user_id: user.user.user_id
+    }
+    try {
+      const result = await fetch(`/image/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formImg)
+      });
+      const data = await result.json();
+      message.success('Image uploaded successfully');
+        clearForm();
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      message.error('Error uploading image');
     }
   };
 
+  const removeImg = () => {
+    setSelectedFile(null);
+  };
+  const clearForm = () => {
+    setSelectedFile(null);
+    setDataImg({
+      url: "",
+      public_id: "",
+      title: "",
+      description: "",
+    })
+  }
+
+  useEffect(() => {
+    if (!user) {
+      message.warning("Please login first!");
+      navigate("/authform");
+    }
+  }, []);
+
   return (
-    <div
-      style={{
-        fontFamily: "Arial, sans-serif",
-        maxWidth: "900px",
-        margin: "auto",
-        backgroundColor: "#fff",
-        padding: "20px",
-        borderRadius: "10px",
-      }}
-    >
+    <div className="font-sans max-w-3xl h-full mx-auto bg-white p-5 rounded-lg">
       {/* Thanh trên đầu */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-          padding: "10px 0",
-          borderBottom: "1px solid #ddd",
-        }}
-      >
-        <h2 style={{ fontSize: "18px", fontWeight: "bold" }}>Trang chủ</h2>
-        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+      <div className="flex justify-between items-center mb-5 pb-2 border-b border-gray-300">
+        <h2 className="text-lg font-bold">Trang chủ</h2>
+        <div className="flex items-center gap-4">
           {/* Tạo (chỉ là văn bản) */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
+          <div className="flex items-center gap-1 font-bold cursor-pointer">
             Tạo <ChevronDown size={16} />
           </div>
 
           {/* Ô tìm kiếm */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              backgroundColor: "#f0f0f0",
-              padding: "8px",
-              borderRadius: "20px",
-              width: "200px",
-            }}
-          >
+          <div className="flex items-center bg-gray-200 p-2 rounded-full w-52">
             <Search size={16} color="#555" />
             <input
               type="text"
               placeholder="Tìm kiếm"
-              style={{
-                border: "none",
-                outline: "none",
-                backgroundColor: "transparent",
-                marginLeft: "5px",
-                flex: 1,
-              }}
+              className="border-none outline-none bg-transparent ml-1 flex-1"
             />
           </div>
 
           {/* Thông báo & Tin nhắn */}
-          <Bell size={22} color="#555" style={{ cursor: "pointer" }} />
-          <MessageSquare size={22} color="#555" style={{ cursor: "pointer" }} />
+          <Bell size={22} color="#555" className="cursor-pointer" />
+          <MessageSquare size={22} color="#555" className="cursor-pointer" />
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: "20px" }}>
+      <div className="flex gap-5">
         {/* Cột trái: Ảnh tải lên + nút lưu */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              border: "2px dashed gray",
-              padding: "20px",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "400px",
-              width: "100%",
-              borderRadius: "10px",
-              backgroundColor: "#fafafa",
-            }}
-          >
+        <div className="flex-1 flex flex-col items-center">
+          <div className={`border-2 border-dashed border-gray-600 cursor-pointer flex flex-col items-center justify-center h-96 max-w-2xl rounded-lg bg-gray-100 ${selectedFile ? "hidden" : ""}`}>
             <input
               type="file"
               accept="image/*"
               id="fileInput"
-              style={{ display: "none" }}
+              className={`hidden ${selectedFile ? "hidden" : ""}`}
               onChange={handleFileChange}
             />
             <label
               htmlFor="fileInput"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
+              className={`flex flex-col items-center ${selectedFile ? "hidden" : ""}`}
             >
               <Upload size={40} color="gray" />
-              <p style={{ color: "#777", fontSize: "14px" }}>
+              <p className={`text-gray-600 text-sm p-2 ${selectedFile ? "hidden" : ""}`}>
                 Kéo và thả hoặc nhấp vào để tải lên
               </p>
             </label>
-            <p style={{ fontSize: "12px", color: "#999" }}>
+            <p className={`text-gray-400 text-xs p-2 ${selectedFile ? "hidden" : ""}`}>
               Bạn nên sử dụng tập tin .jpg chất lượng cao có kích thước dưới
               20MB
             </p>
-            {selectedFile && (
-              <p style={{ marginTop: "10px", fontSize: "14px", color: "#333" }}>
-                Ảnh đã chọn: {selectedFile.name}
-              </p>
-            )}
           </div>
+          {selectedFile && (
+              <div className="flex flex-col h-96 w-full items-center relative">
+                <img src={URL.createObjectURL(selectedFile)} alt="" className="h-full w-full object-cover mt-2" />
+                <button
+                  onClick={removeImg}
+                  className="bg-red-600 text-white py-1 px-3 rounded-md mt-2 absolute top-2 right-2"
+                >
+                  Xóa ảnh
+                </button>
+              </div>
+            )}
 
           {/* Nút lưu từ trang (Nằm dưới ảnh) */}
           <button
             onClick={handleSave}
-            style={{
-              backgroundColor: "#E60023",
-              color: "white",
-              padding: "12px 20px",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "16px",
-              borderRadius: "5px",
-              fontWeight: "bold",
-              width: "100%",
-              marginTop: "15px",
-            }}
+            className="bg-red-600 text-white py-3 px-5 border-none cursor-pointer text-lg rounded-md font-bold w-full mt-4"
           >
-            Lưu từ trang
+            Lưu
           </button>
         </div>
 
         {/* Cột phải: Nội dung, avatar, mô tả, liên kết */}
-        <div style={{ flex: 1 }}>
+        <div className="flex-1">
           {/* Tiêu đề */}
-          <h2 style={{ color: "#333", marginBottom: "10px" }}>Tạo tiêu đề</h2>
-          <hr style={{ border: "0.5px solid #ddd", marginBottom: "15px" }} />
+          <h2 className="text-gray-800 mb-2">Tạo tiêu đề</h2>
+          <hr className="border-0.5 border-gray-300 mb-4" />
 
           {/* Avatar + Tên */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              marginBottom: "15px",
-            }}
-          >
-            <div
-              style={{
-                width: "45px",
-                height: "45px",
-                borderRadius: "50%",
-                backgroundColor: "#ccc",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "18px",
-                fontWeight: "bold",
-                color: "#fff",
-              }}
-            >
-              S
-            </div>
-            <span
-              style={{ fontSize: "16px", fontWeight: "bold", color: "#333" }}
-            >
-              Sang Nguyễn
+          <div className="flex justify-stretch items-center gap-2 mb-4 w-full">
+            <img src={user.user.avatar} alt="User Avatar" className="w-12 h-12 object-cover rounded-full" />
+            <span className="text-lg text-wrap font-bold text-gray-800">
+              {user.user.full_name}
             </span>
           </div>
 
           {/* Ô nhập mô tả */}
-          <div style={{ marginBottom: "15px" }}>
+          <div className="mb-4">
             <input
               type="text"
-              placeholder="Cho mọi người biết Ghim của bạn giới thiệu điều gì"
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "5px",
-                border: "1px solid #ccc",
-                outline: "none",
-              }}
+              name="title"
+              value={dataImg.title}
+              onChange={handleChange}
+              placeholder="Tiêu Đề Hình ảnh"
+              className="w-full p-2 rounded-md border border-gray-300 outline-none"
             />
           </div>
 
           {/* Ô nhập văn bản thay thế */}
-          <div style={{ marginBottom: "15px" }}>
+          <div className="mb-4">
             <input
               type="text"
+              name="description"
+              value={dataImg.description}
+              onChange={handleChange}
               placeholder="Thêm văn bản thay thế"
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "5px",
-                border: "1px solid #ccc",
-                outline: "none",
-              }}
-            />
-          </div>
-
-          {/* Ô nhập liên kết */}
-          <div style={{ marginBottom: "15px" }}>
-            <p
-              style={{
-                fontSize: "14px",
-                fontWeight: "bold",
-                color: "#555",
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-              }}
-            >
-              <Link size={18} color="#555" /> Thêm một số liên kết đến
-            </p>
-            <input
-              type="text"
-              placeholder="Nhập URL liên kết"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "8px",
-                borderRadius: "5px",
-                border: "1px solid #ccc",
-                outline: "none",
-                marginTop: "5px",
-              }}
+              className="w-full p-2 rounded-md border border-gray-300 outline-none"
             />
           </div>
         </div>
