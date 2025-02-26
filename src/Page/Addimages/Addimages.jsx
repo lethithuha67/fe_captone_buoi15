@@ -153,13 +153,13 @@ function AddImages() {
               className={`flex flex-col items-center ${selectedFile ? "hidden" : ""}`}
             >
               <Upload size={40} color="gray" />
-              <p className={`text-gray-600 text-sm p-2 ${selectedFile ? "hidden" : ""}`}>
+              <p className={`text-gray-600 text-sm ${selectedFile ? "hidden" : ""}`}>
                 Kéo và thả hoặc nhấp vào để tải lên
               </p>
             </label>
-            <p className={`text-gray-400 text-xs p-2 ${selectedFile ? "hidden" : ""}`}>
+            <p className={`text-gray-400 text-xs text-justify ${selectedFile ? "hidden" : ""}`}>
               Bạn nên sử dụng tập tin .jpg chất lượng cao có kích thước dưới
-              20MB
+              10MB
             </p>
           </div>
           {selectedFile && (

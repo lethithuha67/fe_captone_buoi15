@@ -1,7 +1,6 @@
 import { message } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-// Import hook useState từ React để quản lý trạng thái của form
 
 export default function ProfileEdit() {
   const navigate = useNavigate()
@@ -42,7 +41,6 @@ export default function ProfileEdit() {
     const find = data.data?.find((item) => item.user_id === id);
     
     if (find) {
-      setUserEdit(find);
       setProfile({
         email: find.email || "",
         pass_word: "", // Keep password empty for security
@@ -143,14 +141,14 @@ export default function ProfileEdit() {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
+      <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-xl">
         {/* Container chứa phần chỉnh sửa hồ sơ, nền trắng, bo góc, bóng đổ */}
 
-        <h2 className="text-xl font-semibold mb-2">Hồ sơ công khai</h2>
+        <h2 className="text-2xl font-semibold mb-1">Hồ sơ công khai</h2>
         {/* Tiêu đề chính của trang */}
 
-        <p className="text-gray-500 mb-4">
-          Người truy cập hồ sơ của bạn sẽ thấy thông tin sau
+        <p className="text-gray-500 mb-2">
+          Người truy cập hồ sơ của bạn sẽ thấy thông tin sau:
         </p>
         {/* Mô tả ngắn về hồ sơ công khai */}
 
@@ -189,7 +187,7 @@ export default function ProfileEdit() {
         </div>
 
         <div className="mt-4">
-          <label className="text-gray-600">email</label>
+          <label className="text-gray-600">Email:</label>
           <input
             readOnly
             type="text"
@@ -201,7 +199,7 @@ export default function ProfileEdit() {
         </div>
 
         <div className="mt-4">
-          <label className="text-gray-600">Password</label>
+          <label className="text-gray-600">Mật khẩu:</label>
           <input
             type="password"
             name="pass_word"

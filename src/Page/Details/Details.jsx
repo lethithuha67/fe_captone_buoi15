@@ -132,7 +132,7 @@ export default function Details() {
           </div>
 
           <div>
-            <h3 className="px-2 py-2 text-xl font-bold">{comments.length} nhận xét</h3>
+            <h3 className="px-2 py-2 text-xl font-bold">{comments.length} Bình Luận</h3>
             {comments.map((comment, index) => {
               const userFind = listUser.find(user => user.user_id === comment.user_id);
               return (

@@ -55,21 +55,22 @@ export default function MyImages() {
 
   return (
     <div className='min-h-screen w-full flex flex-col items-center py-4'>
-        <div className='flex flex-col items-center justify-center w-full'>
+        <div className='flex flex-col gap-3 items-center justify-center w-full'>
             <img src={user.user.avatar} alt="avatar" className='w-32 h-32 rounded-full'/>
             <div className='flex flex-col items-center justify-center w-full gap-1'>
                 <h1 className='text-2xl font-bold'>{user.user.full_name}</h1>
-                <p className='text-base'>{user.user.email}</p>
+                <p className='text-base underline text-stone-500'>{user.user.email}</p>
                 <p className='text-base'>0 người đang theo dõi</p>
-                <button onClick={() => navigate(`/edit/${user.user.user_id}`)} className='bg-stone-200 p-4 rounded-full'>Chỉnh sửa hồ sơ</button>
+                <button onClick={() => navigate(`/edit/${user.user.user_id}`)} className='bg-stone-200 p-3 rounded-full'>Chỉnh sửa hồ sơ</button>
             </div>
+            <h1 className='text-2xl font-bold uppercase'>Danh sách ảnh của bạn:</h1>
         </div>
         <div className="flex flex-wrap h-fit container mx-auto max-w-6xl gap-2 p-4">
             {listImg.length === 0 ? (
                 <p className='container mx-auto max-w-6xl py-10 text-center'>Bạn chưa có hình ảnh, thêm hình ảnh <span className='underline text-blue-400 cursor-pointer' onClick={() => navigate("/addimages")}>tại đây.</span></p>
             ) : (
                 listImg.map((item) => (
-                    <div key={item.public_id} className="flex flex-col w-60 rounded shadow-md overflow-hidden">
+                    <div key={item.public_id} className="flex flex-col w-60 rounded shadow-md overflow-hidden hover:scale-110 hover:z-10 bg-white transition duration-300 ease-in-out">
                         <img src={item.url} alt={item.alt} className="object-cover h-72" />
                         <div className='flex flex-col gap-1 p-2 w-full h-auto relative'>
                             <h3 className='text-lg font-semibold'>{item.title}</h3>
