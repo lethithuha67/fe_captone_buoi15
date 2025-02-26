@@ -165,10 +165,8 @@ function AddImages() {
           {selectedFile && (
               <div className="flex flex-col h-96 w-full items-center relative">
                 <img src={URL.createObjectURL(selectedFile)} alt="" className="h-full w-full object-cover mt-2" />
-                <button
-                  onClick={removeImg}
-                  className="bg-red-600 text-white py-1 px-3 rounded-md mt-2 absolute top-2 right-2"
-                >
+                <button onClick={removeImg}
+                  className="bg-red-600 text-white py-1 px-3 rounded-md mt-2 absolute top-2 right-2">
                   Xóa ảnh
                 </button>
               </div>
