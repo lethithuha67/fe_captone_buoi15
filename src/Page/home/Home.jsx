@@ -5,7 +5,6 @@ import { message } from "antd";
 
 export default function Home() {
   const [dataImg, setListImg] = useState([]);
-  const user = JSON.parse(localStorage.getItem('DATA_USER'));
   const navigate = useNavigate();
 
   const payload = async() => {
@@ -23,6 +22,8 @@ export default function Home() {
         message.error('Failed to fetch images.');
     }
 };
+
+useEffect(() => {},[dataImg])
 
   useEffect(() => {
     payload();

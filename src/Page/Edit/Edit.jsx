@@ -6,7 +6,6 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function ProfileEdit() {
   const navigate = useNavigate()
   const {id} = useParams()
-  const [userEdit, setUserEdit] = useState({});
   const [avatarUp, setAvatarUp] = useState(null);
 
   const [profile, setProfile] = useState({

@@ -11,8 +11,6 @@ import { message } from "antd";
 
 function AddImages() {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [link, setLink] = useState("");
-  const navigate = useNavigate()
   const [dataImg, setDataImg] = useState({
     url: "",
     title: "",
