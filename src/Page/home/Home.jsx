@@ -33,7 +33,7 @@ export default function Home() {
       {dataImg.map((item) => (
         <div key={item.image_id} className="w-40 rounded-lg shadow flex flex-col overflow-hidden">
           <img src={item.url} alt={item.public_id} className="w-full h-auto object-contain" />
-          <p className="p-2 text-blue-400 cursor-pointer" onClick={() => navigate(`/details/${item.image_id}`)}>Xem chi tiết ảnh</p>
+          <p className="p-2 text-blue-400 hover:text-black cursor-pointer" onClick={() => navigate(`/details/${item.image_id}`)}>Xem chi tiết ảnh</p>
         </div>
       ))}
     </div>

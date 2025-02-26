@@ -136,16 +136,16 @@ export default function Details() {
             {comments.map((comment, index) => {
               const userFind = listUser.find(user => user.user_id === comment.user_id);
               return (
-                <div key={index} className="w-full flex flex-row items-center px-4 py-4">
+                <div key={index} className="w-full flex flex-row items-center px-2 py-2 my-2 bg-stone-200 shadow rounded-full">
                   <div className="flex flex-row gap-3 justify-stretch items-center">
                     <img
                       className="w-10 h-10 rounded-full"
                       src={userFind ? userFind.avatar : ''}
                       alt=""
                     />
-                    <div className="flex flex-col gap-2">
-                      <h2>{userFind ? userFind.full_name : 'Unknown User'}</h2>
-                      <p>{comment.content}</p>
+                    <div className="flex flex-col gap-1">
+                      <h2 className="font-bold text-base">{userFind ? userFind.full_name : 'Unknown User'}</h2>
+                      <p className="text-sm">{comment.content}</p>
                     </div>
                   </div>
                 </div>
