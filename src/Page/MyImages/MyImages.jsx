@@ -54,7 +54,7 @@ export default function MyImages() {
     }, []);
 
   return (
-    <div className='min-h-screen w-full flex flex-col items-center py-4'>
+    <div className='min-h-screen w-full flex flex-col items-center py-4 px-3'>
         <div className='flex flex-col gap-3 items-center justify-center w-full'>
             <img src={user.user.avatar} alt="avatar" className='w-32 h-32 rounded-full'/>
             <div className='flex flex-col items-center justify-center w-full gap-1'>
