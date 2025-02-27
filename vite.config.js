@@ -10,12 +10,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/user': {
-        target: 'http://localhost:3000',
+        target: 'http://14.225.204.233:3000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/user/, '/user'),
       },
       '/image': {
-        target: 'http://localhost:3000',
+        target: 'http://14.225.204.233:3000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/image/, '/image'),
       },
